@@ -36,23 +36,27 @@
                     </div>
                 </div>
             </div>
+            <div class="forecast"></div>
         </div>
+       
     </div>
 
     <script>
     
     const apiKey = "5025774cbc6e9b36db483fdc73a2a4ae";
     const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+    const forecastUrl = "https://api.openweathermap.org/data/2.5/forecast?units=metric&q=";
 
     const searchBox = document.querySelector(".search input");
     const searchBtn = document.querySelector(".search button");
-    const weatherIcon = document.querySelector(".weather-icon")
+    const weatherIcon = document.querySelector(".weather-icon");
 
     async function checkWeather(city){
         const response =await fetch(apiUrl +  city +  `&appid=${apiKey}`);
 
         if(response.status == 404){
             document.querySelector(".error").style.display = "block";
+        
             document.querySelector(".weather").style.display = "none";
         }else{
          
@@ -81,7 +85,7 @@
 
         document.querySelector(".weather").style.display = "block";
         document.querySelector(".error").style.display = "none";
-
+        getForecast(city);
         }
 
 
@@ -89,9 +93,41 @@
     }
        
    
-   searchBtn.addEventListener("click", ()=>{
-    checkWeather(searchBox.value);
-   })
+ async function getForecast(city){
+    const response = await fetch(forecastUrl + city + `&appid=${apiKey}`);
+    const data = await response.json();
+
+    const forecastBox = document.querySelector(".forecast");
+    forecastBox.innerHTML = "";
+
+    const dailyForecast = {};
+
+    data.list.forEach(item => {
+        const date = item.dt_txt.split(" ")[0];
+
+        if(!dailyForecast[date] && item.dt_txt.includes("12:00:00")){
+            dailyForecast[date] = item;
+        }
+    });
+
+    Object.keys(dailyForecast).slice(0, 5).forEach(date => {
+        const item = dailyForecast[date];
+
+        const day = new Date(date).toLocaleDateString("en-US", {
+            weekday: "short"
+        });
+
+        forecastBox.innerHTML += `
+            <div class="forecast-day">
+                <p>${day}</p>
+                <img src="https://openweathermap.org/img/wn/${item.weather[0].icon}.png">
+                <p>${Math.round(item.main.temp)}°C</p>
+            </div>
+        `;
+    });
+}
+
+
 
    
     </script>

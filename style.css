@@ -80,13 +80,32 @@ body{
     font-size: 28px;
     margin-top: -6px;
 }
-.weather{
-    display: none;
+
+.forecast{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 30px;
+    gap: 10px;
 }
-.error{
-    text-align: left;
-    margin-left: 10px;
+
+.forecast-day{
+    flex: 1;
+    min-width: 55px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 10px 5px;
+    text-align: center;
+    color: #fff;
+}
+
+.forecast-day p{
+    margin: 5px 0;
     font-size: 14px;
-    margin-top: 10px;
-    display: none;
+}
+
+.forecast-day img{
+    width: 45px;
+    height: 45px;
 }
